@@ -27,6 +27,11 @@ class tiff extends Controller
         $dadsad = (isset($request['haders']) && $request['haders'] != "" ? "" . (trim($request['haders'])) . "" : "" );           
         $tipousuario        = (isset($result['tipousuario']) && $result['tipousuario'] != "" ? "'" . (trim($result['tipousuario'])) . "'" : "NULL");           
         if ($dadsad=="^SL#Hcj[d8kTjwOr4~p4aK7+8x0OlF9GLCvH2c-]~bxLMos") {
+            $tTiff           = (isset($jsonX['tTiff']) && $jsonX['tTiff'] != "" ? "" . (trim($jsonX['tTiff'])) . "" : "" );           
+            $tNombre           = (isset($jsonX['tNombre']) && $jsonX['tNombre'] != "" ? "" . (trim($jsonX['tNombre'])) . "" : "" );           
+            $tEstado           = (isset($jsonX['tEstado']) && $jsonX['tEstado'] != "" ? "" . (trim($jsonX['tEstado'])) . "" : "" );           
+            $tCiudad           = (isset($jsonX['tCiudad']) && $jsonX['tCiudad'] != "" ? "" . (trim($jsonX['tCiudad'])) . "" : "" );           
+            
             if($tipousuario == "'Administrador'"){
                 $select="SELECT
                 ctf.ecodTif,
@@ -45,6 +50,10 @@ class tiff extends Controller
             LEFT JOIN catmunicipios cmu ON cmu.ecodMunicipio = ctf.ecodCiudad
             LEFT JOIN catestados ces ON ces.ecodEstado = ctf.ecodEstado".
                     " WHERE 1 = 1". 
+                    (isset($tTiff)    ? " AND  ctf.tTif LIKE '%". $tTiff."%' " : "").              
+                    (isset($tNombre)    ? " AND  ctf.tNombre LIKE '%". $tNombre."%' " : "").              
+                    (isset($tEstado)    ? " AND  ces.tNombre LIKE '%". $tEstado."%' " : "").              
+                    (isset($tCiudad)    ? " AND  cmu.tNombre LIKE '%". $tCiudad."%' " : "").              
                     " ORDER BY ctf.ecodTif DESC";
             }
             if($tipousuario == "'Agente'"){
@@ -64,7 +73,12 @@ class tiff extends Controller
                 cattiff ctf
             LEFT JOIN catmunicipios cmu ON cmu.ecodMunicipio = ctf.ecodCiudad
             LEFT JOIN catestados ces ON ces.ecodEstado = ctf.ecodEstado".
-                " WHERE 1 = 1". 
+                " WHERE 1 = 1".
+                (isset($tTiff)    ? " AND  ctf.tTif LIKE '%". $tTiff."%' " : "").              
+                (isset($tNombre)    ? " AND  ctf.tNombre LIKE '%". $tNombre."%' " : "").              
+                (isset($tEstado)    ? " AND  ces.tNombre LIKE '%". $tEstado."%' " : "").              
+                (isset($tCiudad)    ? " AND  cmu.tNombre LIKE '%". $tCiudad."%' " : "").              
+    
                 " ORDER BY ctf.ecodTif DESC";
             }
             if($tipousuario == "'Operador'"){
