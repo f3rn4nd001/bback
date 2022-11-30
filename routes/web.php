@@ -56,6 +56,7 @@ Route::post('Catalogo/usuario/detalles', [usuario::class,'getDetalles']);
 Route::post('Catalogo/usuario/getRFC', [usuario::class,'getRFC']);
 Route::post('Catalogo/usuario/delete', [usuario::class,'postEliminar']);
 
+Route::post('Catalogo/tiff/detalles', [tiff::class,'getDetalles']);
 Route::post('Catalogo/tiff/consulta', [tiff::class,'getRegistro']);
 Route::post('Catalogo/tiff/registro', [tiff::class,'postRegistro']);
 Route::post('Catalogo/ciudadmunicipios/consulta', [ciuddesEntidades::class,'getRegistrociudadmunicipio']);

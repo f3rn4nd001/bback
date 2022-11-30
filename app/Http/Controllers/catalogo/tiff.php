@@ -31,7 +31,6 @@ class tiff extends Controller
             $tNombre           = (isset($jsonX['tNombre']) && $jsonX['tNombre'] != "" ? "" . (trim($jsonX['tNombre'])) . "" : "" );           
             $tEstado           = (isset($jsonX['tEstado']) && $jsonX['tEstado'] != "" ? "" . (trim($jsonX['tEstado'])) . "" : "" );           
             $tCiudad           = (isset($jsonX['tCiudad']) && $jsonX['tCiudad'] != "" ? "" . (trim($jsonX['tCiudad'])) . "" : "" );           
-            
             if($tipousuario == "'Administrador'"){
                 $select="SELECT
                 ctf.ecodTif,
@@ -74,11 +73,11 @@ class tiff extends Controller
             LEFT JOIN catmunicipios cmu ON cmu.ecodMunicipio = ctf.ecodCiudad
             LEFT JOIN catestados ces ON ces.ecodEstado = ctf.ecodEstado".
                 " WHERE 1 = 1".
-                (isset($tTiff)    ? " AND  ctf.tTif LIKE '%". $tTiff."%' " : "").              
-                (isset($tNombre)    ? " AND  ctf.tNombre LIKE '%". $tNombre."%' " : "").              
-                (isset($tEstado)    ? " AND  ces.tNombre LIKE '%". $tEstado."%' " : "").              
-                (isset($tCiudad)    ? " AND  cmu.tNombre LIKE '%". $tCiudad."%' " : "").              
-    
+                   (isset($tTiff)    ? " AND  ctf.tTif LIKE '%". $tTiff."%' " : "").              
+                    (isset($tNombre)    ? " AND  ctf.tNombre LIKE '%". $tNombre."%' " : "").              
+                    (isset($tEstado)    ? " AND  ces.tNombre LIKE '%". $tEstado."%' " : "").              
+                    (isset($tCiudad)    ? " AND  cmu.tNombre LIKE '%". $tCiudad."%' " : "").              
+        
                 " ORDER BY ctf.ecodTif DESC";
             }
             if($tipousuario == "'Operador'"){
@@ -117,8 +116,8 @@ class tiff extends Controller
                 }
                 $result;
             }
-            $ecodTiffv          = (isset($result['ecodTiffv'])&& $result['ecodTiffv']>0  ? (int)$result['ecodTiffv']  : "NULL");      
-            $ecodEstatus          = (isset($result['ecodEstatus'])&& $result['ecodEstatus']>0  ? (int)$result['ecodEstatus']  : "NULL");      
+            $ecodTiffv            = (isset($result['ecodTiffv'])&& $result['ecodTiffv']>0  ? (int)$result['ecodTiffv']  : "NULL");      
+            $ecodEstatus        = (isset($result['ecodEstatus'])&& $result['ecodEstatus']>0  ? (int)$result['ecodEstatus']  : "NULL");      
             $ecodEntidades      = (isset($result['ecodEntidades']['ecodestados'])&& $result['ecodEntidades']['ecodestados']>0  ? (int)$result['ecodEntidades']['ecodestados']  : "NULL");       
             $tTiff              = (isset($result['tTiff']) && $result['tTiff'] != "" ? "'" . (trim($result['tTiff'])) . "'" : "NULL");
             $tNombre            = (isset($result['tNombre']) && $result['tNombre'] != "" ? "'" . (trim($result['tNombre'])) . "'" : "NULL");
@@ -126,6 +125,7 @@ class tiff extends Controller
             $tRFC               = (isset($result['tRFC']) && $result['tRFC'] != "" ? "'" . (trim($result['tRFC'])) . "'" : "NULL");
             $ecodMunicipios     = (isset($result['ecodMunicipios']['ecodmunicipios'])&& $result['ecodMunicipios']['ecodmunicipios']>0  ? (int)$result['ecodMunicipios']['ecodmunicipios']  : "NULL");       
             $loginEcodUsuarios  = (isset($result['loginEcodUsuarios'])&&$result['loginEcodUsuarios']!="" ? "'".(trim($result['loginEcodUsuarios']))."'":   "NULL");         
+            
             try {
                 DB::beginTransaction();
                 $insert=" CALL `stpInsertarCatTiff`(".$tTiff.",".$tNombre.",".$tNpmbreCorto.",".$tRFC.",".$ecodEntidades.",".$ecodMunicipios.",".$loginEcodUsuarios.",".$ecodTiffv.",".$ecodEstatus.")";
@@ -144,6 +144,36 @@ class tiff extends Controller
                 $exito = $e->getMessage();
             }
             return response()->json(['codigo' => $codigoreltiff, 'exito' => $exito]);
+        }
+    }
+    public function getDetalles(Request $request){
+        $dadsad = (isset($request['haders']) && $request['haders'] != "" ? "" . (trim($request['haders'])) . "" : "" );           
+        if ($dadsad=="^SL#Hcj[d8kTjwOr4~p4aK7+8x0OlF9GLCvH2c-]~bxLMos") {
+            $json = json_decode( $request['datos'] ,true);
+            $ecodTiffv          = (isset($json)&& $json>0  ? (int)$json  : "NULL");      
+          
+            $select="SELECT
+            ctf.ecodTif,
+            ctf.tNombre,
+            ctf.tNombreCorto,
+            ctf.ecodCiudad,
+            cmu.tNombre AS Ciudad,
+            ctf.ecodEstado,
+            ces.tNombre AS Estado,
+            ctf.nCalle,
+            ctf.tcp,
+            ctf.tTif,
+            ctf.tRFC,
+            ctf.ecodEstatus,
+			cts.tNombre AS estatus
+        FROM
+            cattiff ctf
+        LEFT JOIN catmunicipios cmu ON cmu.ecodMunicipio = ctf.ecodCiudad
+        LEFT JOIN catestados ces ON ces.ecodEstado = ctf.ecodEstado
+        LEFT JOIN catestatus cts ON cts.EcodEstatus= ctf.ecodEstatus
+        WHERE ctf.ecodTif = ".(int)$ecodTiffv;
+        $sql = DB::select(DB::raw($select));
+        return response()->json(['sql'=>$sql]);
         }
     }
 }
