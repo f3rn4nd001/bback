@@ -40,7 +40,7 @@ class tiff extends Controller
                 cmu.tNombre AS Ciudad,
                 ctf.ecodEstado,
                 ces.tNombre AS Estado,
-                ctf.nCalle,
+                ctf.tDireccion,
                 ctf.tcp,
                 ctf.tTif,
                 ctf.tRFC
@@ -64,7 +64,7 @@ class tiff extends Controller
                 cmu.tNombre AS Ciudad,
                 ctf.ecodEstado,
                 ces.tNombre AS Estado,
-                ctf.nCalle,
+                ctf.tDireccion,
                 ctf.tcp,
                 ctf.tTif,
                 ctf.tRFC
@@ -89,7 +89,7 @@ class tiff extends Controller
                 cmu.tNombre AS Ciudad,
                 ctf.ecodEstado,
                 ces.tNombre AS Estado,
-                ctf.nCalle,
+                ctf.tDireccion,
                 ctf.tcp,
                 ctf.tTif,
                 ctf.tRFC
@@ -125,10 +125,12 @@ class tiff extends Controller
             $tRFC               = (isset($result['tRFC']) && $result['tRFC'] != "" ? "'" . (trim($result['tRFC'])) . "'" : "NULL");
             $ecodMunicipios     = (isset($result['ecodMunicipios']['ecodmunicipios'])&& $result['ecodMunicipios']['ecodmunicipios']>0  ? (int)$result['ecodMunicipios']['ecodmunicipios']  : "NULL");       
             $loginEcodUsuarios  = (isset($result['loginEcodUsuarios'])&&$result['loginEcodUsuarios']!="" ? "'".(trim($result['loginEcodUsuarios']))."'":   "NULL");         
+            $tDireccion               = (isset($result['tDireccion']) && $result['tDireccion'] != "" ? "'" . (trim($result['tDireccion'])) . "'" : "NULL");
+            $tCP               = (isset($result['tCP']) && $result['tCP'] != "" ? "'" . (trim($result['tCP'])) . "'" : "NULL");
             
             try {
                 DB::beginTransaction();
-                $insert=" CALL `stpInsertarCatTiff`(".$tTiff.",".$tNombre.",".$tNpmbreCorto.",".$tRFC.",".$ecodEntidades.",".$ecodMunicipios.",".$loginEcodUsuarios.",".$ecodTiffv.",".$ecodEstatus.")";
+                $insert=" CALL `stpInsertarCatTiff`(".$tTiff.",".$tNombre.",".$tNpmbreCorto.",".$tRFC.",".$ecodEntidades.",".$ecodMunicipios.",".$loginEcodUsuarios.",".$ecodTiffv.",".$ecodEstatus.",".$tCP.",".$tDireccion.")";
                 $response = DB::select($insert);
                 $codigoreltiff  = (isset($response[0]->Codigo)&& $response[0]->Codigo>0  ? (int)$response[0]->Codigo : "NULL");
                 if (!$codigoreltiff) {
@@ -160,7 +162,7 @@ class tiff extends Controller
             cmu.tNombre AS Ciudad,
             ctf.ecodEstado,
             ces.tNombre AS Estado,
-            ctf.nCalle,
+            ctf.tDireccion,
             ctf.tcp,
             ctf.tTif,
             ctf.tRFC,
@@ -173,7 +175,8 @@ class tiff extends Controller
         LEFT JOIN catestatus cts ON cts.EcodEstatus= ctf.ecodEstatus
         WHERE ctf.ecodTif = ".(int)$ecodTiffv;
         $sql = DB::select(DB::raw($select));
-        return response()->json(['sql'=>$sql]);
-        }
+          }
+          return response()->json(['sql'=>$sql]);
+    
     }
 }
