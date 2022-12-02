@@ -181,7 +181,7 @@ class viaje extends Controller
         $dadsad = (isset($request['haders']) && $request['haders'] != "" ? "" . (trim($request['haders'])) . "" : "" );           
         if ($dadsad=="^SL#Hcj[d8kTjwOr4~p4aK7+8x0OlF9GLCvH2c-]~bxLMos") {
             $json = json_decode( $request['datos'] ,true);
-            $select="SELECT 	cesde.tNombre AS estadodes, mcd.tNombre as municipiodes, ctfdes.tNombre as nombreempresades,ctf.ecodCiudad,ctf.ecodEstado,ctf.tNombre AS nombreEmpresa,ctfdes.tTif AS tiffdestino, ces.tNombre AS Estado, ctf.tNombreCorto AS nombrecortoempresa, ctf.tTif, cm.tNombre AS Municipio, bc.Link, bc.tTipoViaje,bc.tTipoGasto,bc.ecodProvedor,bc.EcodEstatus,bc.ecodOperados,bc.tmonitoreo,bc.ecodCliente,bc.ecodViaje,bc.treferencia, bc.tpedido,bc.tDestino,bc.tOrigen,concat_ws('',cu.tNombre,' ', cu.tApellido) AS operador,concat_ws(' ',cuc.tNombre,' ', cuc.tApellido) AS cliente,ce.tNombre AS Estatus, DATE_FORMAT(bc.fhSalida,'%y-%m-%d')as fhSalida, DATE_FORMAT(bc.fhLlegada,'%y-%m-%d') as fhLlegada FROM bitviajes bc
+            $select="SELECT ctf.tDireccion AS tDireccionor, ctf.tcp AS tcpor, ctfdes.tDireccion AS tDirecciondes ,ctfdes.tcp AS tcpdes,cesde.tNombre AS estadodes, mcd.tNombre as municipiodes, ctfdes.tNombre as nombreempresades,ctf.ecodCiudad,ctf.ecodEstado,ctf.tNombre AS nombreEmpresa,ctfdes.tTif AS tiffdestino, ces.tNombre AS Estado, ctf.tNombreCorto AS nombrecortoempresa, ctf.tTif, cm.tNombre AS Municipio, bc.Link, bc.tTipoViaje,bc.tTipoGasto,bc.ecodProvedor,bc.EcodEstatus,bc.ecodOperados,bc.tmonitoreo,bc.ecodCliente,bc.ecodViaje,bc.treferencia, bc.tpedido,bc.tDestino,bc.tOrigen,concat_ws('',cu.tNombre,' ', cu.tApellido) AS operador,concat_ws(' ',cuc.tNombre,' ', cuc.tApellido) AS cliente,ce.tNombre AS Estatus, DATE_FORMAT(bc.fhSalida,'%y-%m-%d')as fhSalida, DATE_FORMAT(bc.fhLlegada,'%y-%m-%d') as fhLlegada FROM bitviajes bc
             LEFT JOIN catestatus ce ON ce.EcodEstatus = bc.EcodEstatus
             LEFT JOIN catusuarios cu ON cu.ecodUsuarios = bc.ecodOperados
             LEFT JOIN catusuarios cuc ON cuc.ecodUsuarios=bc.ecodCliente
@@ -193,7 +193,7 @@ class viaje extends Controller
             LEFT JOIN catestados cesde ON cesde.ecodEstado = ctfdes.ecodEstado
                 WHERE bc.ecodViaje = ".(int)$json;
             $sql = DB::select(DB::raw($select));
-           
+      
             $mensjeri="SELECT bm.* FROM relviajemensaje rvm
                 LEFT JOIN bitviajes bv ON bv.ecodViaje = rvm.ecodViaje
                 LEFT JOIN bitmensaje bm ON bm.ecodMensaje = rvm.ecodMensaje
