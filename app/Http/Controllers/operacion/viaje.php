@@ -150,10 +150,13 @@ class viaje extends Controller
         $dadsad = (isset($request['haders']) && $request['haders'] != "" ? "" . (trim($request['haders'])) . "" : "" );           
         if ($dadsad=="^SL#Hcj[d8kTjwOr4~p4aK7+8x0OlF9GLCvH2c-]~bxLMos") {
             $json = json_decode( $request['datos'] ,true);
-            $selectViajes ="SELECT bc.ecodProvedor,bc.tmonitoreo,bc.ecodCliente,bc.ecodViaje,bc.treferencia, bc.tpedido,bc.tDestino,bc.tOrigen,concat_ws('',cu.tNombre,' ', cu.tApellido) AS operador,concat_ws(' ',cuc.tNombre,' ', cuc.tApellido) AS cliente,ce.tNombre AS Estatus, bc.fhSalida, bc.fhLlegada FROM bitviajes bc
+            $selectViajes ="SELECT cm.tNombre AS municipio, ces.tNombre as estados,ctdes.tNombre AS emDestino,bc.Link, bc.ecodProvedor,bc.tmonitoreo,bc.ecodCliente,bc.ecodViaje,bc.treferencia, bc.tpedido,bc.tDestino,bc.tOrigen,concat_ws('',cu.tNombre,' ', cu.tApellido) AS operador,concat_ws(' ',cuc.tNombre,' ', cuc.tApellido) AS cliente,ce.tNombre AS Estatus, bc.fhSalida, bc.fhLlegada FROM bitviajes bc
             LEFT JOIN catestatus ce ON ce.EcodEstatus = bc.EcodEstatus
             LEFT JOIN catusuarios cu ON cu.ecodUsuarios = bc.ecodOperados
             LEFT JOIN catusuarios cuc ON cuc.ecodUsuarios=bc.ecodCliente
+            LEFT JOIN cattiff ctdes On ctdes.ecodTif = bc.tDestino	
+            LEFT JOIN catmunicipios cm ON cm.ecodMunicipio =ctdes.ecodCiudad
+            LEFT JOIN catestados ces ON ces.ecodEstado= ctdes.ecodEstado
             WHERE bc.ecodCliente =".(int)$json." AND bc.EcodEstatus <> 4";
             $sql = DB::select(DB::raw($selectViajes));
             foreach ($sql as $key => $v){
@@ -170,7 +173,11 @@ class viaje extends Controller
                     'fhSalida' => $v->fhSalida,
                     'fhLlegada' => $v->fhLlegada,
                     'tmonitoreo'=> $v->tmonitoreo,
-                    'ecodProvedor' => $v->ecodProvedor
+                    'ecodProvedor' => $v->ecodProvedor,
+                    'emDestino' => $v-> emDestino,
+                    'Link' => $v-> Link,
+                    'municipio'=> $v-> municipio,
+                    'estados'=> $v-> estados
                 );
             }
             return response()->json(['Viajes'=>(isset($resViajes) ? $resViajes : "")]);
@@ -268,7 +275,7 @@ class viaje extends Controller
                 $result;
             }
             $sid    = "AC734689817fa8c10fa5a3d1a19fde276b"; 
-            $token  = "88381592ece3d503a80060caf6dbe97c"; 
+            $token  = "3839e7ef4b6da67827bae4156f588c74"; 
             $exito = 1;
             foreach ($result as $key => $value) {
                 $ecodViaje      = (isset($value['ecodViaje'])&& $value['ecodViaje']>0  ? (int)$value['ecodViaje']  : "NULL"); 
@@ -277,6 +284,9 @@ class viaje extends Controller
                 $treferencia    = (isset($value['treferencia']) && $value['treferencia'] != "" ? "'" . (trim($value['treferencia'])) . "'" : "NULL");
                 $tpedido        = (isset($value['tpedido']) && $value['tpedido'] != "" ? "'" . (trim($value['tpedido'])) . "'" : "NULL");
                 $tDestino       = (isset($value['tDestino']) && $value['tDestino'] != "" ? "'" . (trim($value['tDestino'])) . "'" : "NULL");
+                $emDestino       = (isset($value['emDestino']) && $value['emDestino'] != "" ? "'" . (trim($value['emDestino'])) . "'" : "NULL");
+                $municipio       = (isset($value['municipio']) && $value['municipio'] != "" ? "'" . (trim($value['municipio'])) . "'" : "NULL");
+                $estados       = (isset($value['estados']) && $value['estados'] != "" ? "'" . (trim($value['estados'])) . "'" : "NULL");
                 $operador       = (isset($value['operador']) && $value['operador'] != "" ? "'" . (trim($value['operador'])) . "'" : "NULL");
                 $tpedido        = (isset($value['tpedido']) && $value['tpedido'] != "" ? "'" . (trim($value['tpedido'])) . "'" : "NULL");
                 $tOrigen        = (isset($value['tOrigen']) && $value['tOrigen'] != "" ? "'" . (trim($value['tOrigen'])) . "'" : "NULL");
@@ -289,7 +299,7 @@ class viaje extends Controller
             if ($tmonitoreo == "'1'") {
             
                     $arrmensaje[]=array(
-                "*$tpedido* *$treferencia* *$tDestino* OPERADOR:$operador Comentario: *$tComentario*  %1\$s"
+                "*$tpedido* *$treferencia* *$tDestino $emDestino $estados $municipio* OPERADOR:$operador Comentario: *$tComentario*  %1\$s"
                     );
                 }
                 if ($tmonitoreo == "'1'") {
@@ -364,7 +374,7 @@ $json"));
                 }
             }
             $sid    = "AC734689817fa8c10fa5a3d1a19fde276b"; 
-            $token  = "88381592ece3d503a80060caf6dbe97c"; 
+            $token  = "3839e7ef4b6da67827bae4156f588c74"; 
             $exito  = 1;
             $datas2=$result[0];
             if (count($result[0]['newCel']) > 0) {
@@ -380,6 +390,9 @@ $json"));
                     $tpedido        = (isset($viajes['tpedido']) && $viajes['tpedido'] != "" ? "'" . (trim($viajes['tpedido'])) . "'" : "NULL");
                     $ecodViaje      = (isset($viajes['ecodViaje'])&& $viajes['ecodViaje']>0  ? (int)$viajes['ecodViaje']  : "NULL");
                     $tDestino       = (isset($viajes['tDestino']) && $viajes['tDestino'] != "" ? "'" . (trim($viajes['tDestino'])) . "'" : "NULL");
+                    $estadodes       = (isset($viajes['estadodes']) && $viajes['estadodes'] != "" ? "'" . (trim($viajes['estadodes'])) . "'" : "NULL");
+                    $municipiodes       = (isset($viajes['municipiodes']) && $viajes['municipiodes'] != "" ? "'" . (trim($viajes['municipiodes'])) . "'" : "NULL");
+                    $nombreempresades       = (isset($viajes['nombreempresades']) && $viajes['nombreempresades'] != "" ? "'" . (trim($viajes['nombreempresades'])) . "'" : "NULL");
                     $tOrigen        = (isset($viajes['tOrigen']) && $viajes['tOrigen'] != "" ? "'" . (trim($viajes['tOrigen'])) . "'" : "NULL");
                     $operador       = (isset($viajes['operador']) && $viajes['operador'] != "" ? "'" . (trim($viajes['operador'])) . "'" : "NULL");
                     $fhSalida       = (isset($viajes['fhSalida']) && $viajes['fhSalida'] != "" ? "'" . (trim($viajes['fhSalida'])) . "'" : "NULL");
@@ -398,7 +411,7 @@ $json"));
                                             array( 
                                                 "from" => "whatsapp:+14155238886",       
                                                 "body" => "🛣️🚛🌎 *MONITOREO INTERRA // BSL // DESCARGAS $ldate* 
-                *$tpedido* *$treferencia* *// $tDestino* 
+                *$tpedido* *$treferencia* *// $tDestino $nombreempresades $estadodes $municipiodes* 
                 OPERADOR: $operador
                 *$tMensaje*"));    
                 }
@@ -411,6 +424,9 @@ $json"));
                     $ecodViaje      = (isset($viajes['ecodViaje'])&& $viajes['ecodViaje']>0  ? (int)$viajes['ecodViaje']  : "NULL");
                     $tDestino       = (isset($viajes['tDestino']) && $viajes['tDestino'] != "" ? "'" . (trim($viajes['tDestino'])) . "'" : "NULL");
                     $tOrigen        = (isset($viajes['tOrigen']) && $viajes['tOrigen'] != "" ? "'" . (trim($viajes['tOrigen'])) . "'" : "NULL");
+                    $nombreempresades       = (isset($viajes['nombreempresades']) && $viajes['nombreempresades'] != "" ? "'" . (trim($viajes['nombreempresades'])) . "'" : "NULL");
+                    $estadodes       = (isset($viajes['estadodes']) && $viajes['estadodes'] != "" ? "'" . (trim($viajes['estadodes'])) . "'" : "NULL");
+                    $municipiodes       = (isset($viajes['municipiodes']) && $viajes['municipiodes'] != "" ? "'" . (trim($viajes['municipiodes'])) . "'" : "NULL");
                     $operador       = (isset($viajes['operador']) && $viajes['operador'] != "" ? "'" . (trim($viajes['operador'])) . "'" : "NULL");
                     $fhSalida       = (isset($viajes['fhSalida']) && $viajes['fhSalida'] != "" ? "'" . (trim($viajes['fhSalida'])) . "'" : "NULL");
                     $fhLlegada      = (isset($viajes['fhLlegada']) && $viajes['fhLlegada'] != "" ? "'" . (trim($viajes['fhLlegada'])) . "'" : "NULL");
@@ -429,7 +445,7 @@ $json"));
                                         array( 
                                             "from" => "whatsapp:+14155238886",       
                                             "body" => "🛣️🚛🌎 *MONITOREO INTERRA // BSL // DESCARGAS $ldate* 
-            *$tpedido* *$treferencia* *// $tDestino* 
+            *$tpedido* *$treferencia* *// $tDestino $nombreempresades $estadodes $municipiodes* 
                 OPERADOR: $operador
                 *$tMensaje*") );  
                 }
