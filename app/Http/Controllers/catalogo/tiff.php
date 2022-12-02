@@ -125,9 +125,8 @@ class tiff extends Controller
             $tRFC               = (isset($result['tRFC']) && $result['tRFC'] != "" ? "'" . (trim($result['tRFC'])) . "'" : "NULL");
             $ecodMunicipios     = (isset($result['ecodMunicipios']['ecodmunicipios'])&& $result['ecodMunicipios']['ecodmunicipios']>0  ? (int)$result['ecodMunicipios']['ecodmunicipios']  : "NULL");       
             $loginEcodUsuarios  = (isset($result['loginEcodUsuarios'])&&$result['loginEcodUsuarios']!="" ? "'".(trim($result['loginEcodUsuarios']))."'":   "NULL");         
-            $tDireccion               = (isset($result['tDireccion']) && $result['tDireccion'] != "" ? "'" . (trim($result['tDireccion'])) . "'" : "NULL");
-            $tCP               = (isset($result['tCP']) && $result['tCP'] != "" ? "'" . (trim($result['tCP'])) . "'" : "NULL");
-            
+            $tDireccion         = (isset($result['tDireccion']) && $result['tDireccion'] != "" ? "'" . (trim($result['tDireccion'])) . "'" : "NULL");
+            $tCP                = (isset($result['tCP']) && $result['tCP'] != "" ? "'" . (trim($result['tCP'])) . "'" : "NULL");
             try {
                 DB::beginTransaction();
                 $insert=" CALL `stpInsertarCatTiff`(".$tTiff.",".$tNombre.",".$tNpmbreCorto.",".$tRFC.",".$ecodEntidades.",".$ecodMunicipios.",".$loginEcodUsuarios.",".$ecodTiffv.",".$ecodEstatus.",".$tCP.",".$tDireccion.")";
