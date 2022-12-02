@@ -481,6 +481,7 @@ $json"));
             $tTipoGasto     = (isset($result['tTipoGasto']) && $result['tTipoGasto'] != "" ? "'" . (trim($result['tTipoGasto'])) . "'" : "NULL");
             $Link           = (isset($result['Link']) && $result['Link'] != "" ? "'" . (trim($result['Link'])) . "'" : "NULL");
             $EcodEstatus    = (isset($result['ecodEstatus'])&& $result['ecodEstatus']>0  ? (int)$result['ecodEstatus']  : "NULL");       
+            $loginEcodUsuarios  = (isset($result['loginEcodUsuarios']) && $result['loginEcodUsuarios'] != "" ? "'" . (trim($result['loginEcodUsuarios'])) . "'" : "NULL");
             if (count($result['datosViajes']) > 0) { 
                 $relecodViaje       = (isset($result['datosViajes']['ecodViaje'])&& $result['datosViajes']['ecodViaje']>0  ? (int)$result['datosViajes']['ecodViaje']  : "NULL");       
                 $reltreferencia     = (isset($result['datosViajes']['treferencia']) && $result['datosViajes']['treferencia'] != "" ? "'" . (trim($result['datosViajes']['treferencia'])) . "'" : "NULL");
@@ -494,7 +495,6 @@ $json"));
                 $relecodCliente     = (isset($result['datosViajes']['ecodCliente']) && $result['datosViajes']['ecodCliente'] != "" ? "'" . (trim($result['datosViajes']['ecodCliente'])) . "'" : "NULL");
                 $relcheckmonitor    = (isset($result['datosViajes']['tmonitoreo'])&& $result['datosViajes']['tmonitoreo']>0  ? (int)$result['datosViajes']['tmonitoreo']  : "NULL");
                 $relecodEstatus     = (isset($result['datosViajes']['EcodEstatus'])&& $result['datosViajes']['EcodEstatus']>0  ? (int)$result['datosViajes']['EcodEstatus']  : "NULL");       
-                $loginEcodUsuarios  = (isset($result['loginEcodUsuarios']) && $result['loginEcodUsuarios'] != "" ? "'" . (trim($result['loginEcodUsuarios'])) . "'" : "NULL");
                 $tincidentes        = (isset($result['tincidentes']) && $result['tincidentes'] != "" ? "'" . (trim($result['tincidentes'])) . "'" : "NULL");
                 $reltTipoViaje      = (isset($result['datosViajes']['tTipoViaje']) && $result['datosViajes']['tTipoViaje'] != "" ? "'" . (trim($result['datosViajes']['tTipoViaje'])) . "'" : "NULL");
                 $reltTipoGasto      = (isset($result['datosViajes']['tTipoGasto']) && $result['datosViajes']['tTipoGasto'] != "" ? "'" . (trim($result['datosViajes']['tTipoGasto'])) . "'" : "NULL");
@@ -507,7 +507,7 @@ $json"));
             }
             try {
                 DB::beginTransaction();
-                $insert=" CALL `stpInsertarBitViajes`(".$treferencia.",".$tpedido.",".$ecodProvedor.",".$tOrigen.",".$tDestino.",".$fhSalida.",".$fhLlegada. ",".$ecodOperados. ",".$ecodCliente.",".$EcodEstatus.",".$checkmonitor.",".$ecodViaje.",".$tTipoViaje.",".$tTipoGasto.",".$Link.")";
+                $insert=" CALL `stpInsertarBitViajes`(".$treferencia.",".$tpedido.",".$ecodProvedor.",".$tOrigen.",".$tDestino.",".$fhSalida.",".$fhLlegada. ",".$ecodOperados. ",".$ecodCliente.",".$EcodEstatus.",".$checkmonitor.",".$ecodViaje.",".$tTipoViaje.",".$tTipoGasto.",".$Link.",".$loginEcodUsuarios.")";
                 $response = DB::select($insert);
                 $codigorelvia  = (isset($response[0]->Codigo)&& $response[0]->Codigo>0  ? (int)$response[0]->Codigo : "NULL");
                 if (!$codigorelvia) {
